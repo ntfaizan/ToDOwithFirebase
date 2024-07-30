@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.nutech.todowithfirebase.adapters.ItemAdapter;
+import com.nutech.todowithfirebase.adapters.StudentAdapter;
 import com.nutech.todowithfirebase.databinding.ActivityMainBinding;
 import com.nutech.todowithfirebase.models.Student;
 
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up the RecyclerView
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ItemAdapter adapter = new ItemAdapter(itemList);
+        StudentAdapter adapter = new StudentAdapter(itemList);
         binding.recyclerView.setAdapter(adapter);
     }
 }

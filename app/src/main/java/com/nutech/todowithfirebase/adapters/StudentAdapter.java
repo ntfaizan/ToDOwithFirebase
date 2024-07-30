@@ -11,11 +11,11 @@ import com.nutech.todowithfirebase.models.Student;
 
 import java.util.List;
 
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
+public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHolder> {
 
     private List<Student> itemList;
 
-    public ItemAdapter(List<Student> itemList) {
+    public StudentAdapter(List<Student> itemList) {
         this.itemList = itemList;
     }
 
