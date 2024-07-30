@@ -1,14 +1,19 @@
 package com.nutech.todowithfirebase.models;
 
 public class Student {
-    private String title;
 
-    public Student(String title) {
+    public String name;
+    public int age;
+    public int rollNo;
+    public String title;
+
+
+
+    public Student(String name, int age, int rollNo, String title) {
+        this.name = name;
+        this.age = age;
+        this.rollNo = rollNo;
         this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
     }
 }
 

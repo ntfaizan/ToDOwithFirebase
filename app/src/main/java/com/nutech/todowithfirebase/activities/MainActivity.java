@@ -25,9 +25,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a list of items
         List<Student> itemList = new ArrayList<>();
-        for (int i = 1; i <= 20; i++) {
-            itemList.add(new Student("Item " + i));
-        }
+        itemList.add(new Student("Ali", 25, 1, "BSCS"));
+        itemList.add(new Student("Munir", 28, 2, "BSMath"));
+        itemList.add(new Student("Hamza", 21, 3, "BSIT"));
+        itemList.add(new Student("Farman", 23, 4, "BSCS"));
+        itemList.add(new Student("Ali", 25, 5, "BSCS"));
+        itemList.add(new Student("Munir", 28, 6, "BSMath"));
+        itemList.add(new Student("Hamza", 21, 7, "BSIT"));
+        itemList.add(new Student("Farman", 23, 8, "BSCS"));
 
         // Set up the RecyclerView
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
