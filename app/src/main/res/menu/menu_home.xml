@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.nutech.todowithfirebase.activities.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_student"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Click here to Add Student"
         android:icon="@drawable/baseline_1x_mobiledata_24"
         app:showAsAction="always" />
 </menu>

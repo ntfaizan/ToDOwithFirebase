@@ -1,20 +1,34 @@
 package com.nutech.todowithfirebase.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.nutech.todowithfirebase.R;
 import com.nutech.todowithfirebase.adapters.StudentAdapter;
 import com.nutech.todowithfirebase.databinding.ActivityMainBinding;
 import com.nutech.todowithfirebase.models.Student;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private String TAG = "cust_tag";
+    // Create a list of items
+    List<Student> studentList = new ArrayList<>();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,20 +37,52 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
 
-        // Create a list of items
-        List<Student> itemList = new ArrayList<>();
-        itemList.add(new Student("Ali", 25, 1, "BSCS"));
-        itemList.add(new Student("Munir", 28, 2, "BSMath"));
-        itemList.add(new Student("Hamza", 21, 3, "BSIT"));
-        itemList.add(new Student("Farman", 23, 4, "BSCS"));
-        itemList.add(new Student("Ali", 25, 5, "BSCS"));
-        itemList.add(new Student("Munir", 28, 6, "BSMath"));
-        itemList.add(new Student("Hamza", 21, 7, "BSIT"));
-        itemList.add(new Student("Farman", 23, 8, "BSCS"));
-
         // Set up the RecyclerView
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        StudentAdapter adapter = new StudentAdapter(itemList);
-        binding.recyclerView.setAdapter(adapter);
+    }
+
+    private void setAdapter(){
+        studentList.clear();
+        db.collection("students")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            Map<String, Object> data = document.getData();
+                            Log.d(TAG, document.getId() + " => " + data);
+                            studentList.add(new Student(Objects.requireNonNull(data.get("name")).toString(), Integer.parseInt(Objects.requireNonNull(data.get("age")).toString()), Integer.parseInt(Objects.requireNonNull(data.get("roll_no")).toString()), Objects.requireNonNull(data.get("title")).toString()));
+                        }
+                        StudentAdapter adapter = new StudentAdapter(studentList);
+                        binding.recyclerView.setAdapter(adapter);
+                    } else {
+                        Log.w(TAG, "Error getting documents.", task.getException());
+                    }
+                });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setAdapter();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu resource into the Menu object
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return true; // Return true to display the menu
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        // Handle menu item clicks here
+        if(item.getItemId()==R.id.action_student){
+            Intent intent = new Intent(MainActivity.this, StudentAddActivity.class);
+            startActivity(intent);
+            return true;
+        }else{
+            return super.onOptionsItemSelected(item);
+        }
     }
 }
