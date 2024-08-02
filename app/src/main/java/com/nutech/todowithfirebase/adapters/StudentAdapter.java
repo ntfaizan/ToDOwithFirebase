@@ -3,21 +3,29 @@ package com.nutech.todowithfirebase.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.nutech.todowithfirebase.R;
 import com.nutech.todowithfirebase.models.Student;
+import com.nutech.todowithfirebase.services.OnStudentDeleteListener;
 
 import java.util.List;
 
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHolder> {
 
     private List<Student> itemList;
+    private OnStudentDeleteListener deleteListener;
 
-    public StudentAdapter(List<Student> itemList) {
+    public StudentAdapter(List<Student> itemList, OnStudentDeleteListener deleteListener) {
         this.itemList = itemList;
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -39,11 +47,13 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
         return itemList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView txtName;
         public TextView txtAge;
         public TextView txtRollNo;
         public TextView txtDegreeTitle;
+        private ImageButton btnDelete;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -51,6 +61,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
             txtAge = itemView.findViewById(R.id.txtAge);
             txtRollNo = itemView.findViewById(R.id.txtRollNo);
             txtDegreeTitle = itemView.findViewById(R.id.txtTitle);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
 
         public void bind(Student student) {
@@ -58,6 +69,33 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
             txtAge.setText(String.valueOf(student.age));
             txtRollNo.setText(String.valueOf(student.rollNo));
             txtDegreeTitle.setText(student.title);
+
+            btnDelete.setOnClickListener(v -> {
+                deleteDocument(student.docId);
+            });
+        }
+
+        private void deleteDocument(String docId){
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            // Get a reference to the document
+            DocumentReference docRef = db.collection("students").document(docId);
+            // Delete the document
+            docRef.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        // Document was successfully deleted
+                        System.out.println("DocumentSnapshot successfully deleted!");
+                        // Remove the item from the adapter's list and notify
+                        if (deleteListener != null) {
+                            deleteListener.onStudentDelete();
+                        }
+                    } else {
+                        // Handle the error
+                        System.err.println("Error deleting document: " + task.getException());
+                    }
+                }
+            });
         }
     }
 }

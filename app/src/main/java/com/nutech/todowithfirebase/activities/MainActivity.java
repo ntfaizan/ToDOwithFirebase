@@ -16,13 +16,14 @@ import com.nutech.todowithfirebase.R;
 import com.nutech.todowithfirebase.adapters.StudentAdapter;
 import com.nutech.todowithfirebase.databinding.ActivityMainBinding;
 import com.nutech.todowithfirebase.models.Student;
+import com.nutech.todowithfirebase.services.OnStudentDeleteListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnStudentDeleteListener {
 
     private ActivityMainBinding binding;
     private String TAG = "cust_tag";
@@ -50,9 +51,10 @@ public class MainActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             Map<String, Object> data = document.getData();
                             Log.d(TAG, document.getId() + " => " + data);
-                            studentList.add(new Student(Objects.requireNonNull(data.get("name")).toString(), Integer.parseInt(Objects.requireNonNull(data.get("age")).toString()), Integer.parseInt(Objects.requireNonNull(data.get("roll_no")).toString()), Objects.requireNonNull(data.get("title")).toString()));
+                            Student student = new Student(document.getId(), Objects.requireNonNull(data.get("name")).toString(), Integer.parseInt(Objects.requireNonNull(data.get("age")).toString()), Integer.parseInt(Objects.requireNonNull(data.get("roll_no")).toString()), Objects.requireNonNull(data.get("title")).toString());
+                            studentList.add(student);
                         }
-                        StudentAdapter adapter = new StudentAdapter(studentList);
+                        StudentAdapter adapter = new StudentAdapter(studentList, this);
                         binding.recyclerView.setAdapter(adapter);
                     } else {
                         Log.w(TAG, "Error getting documents.", task.getException());
@@ -84,5 +86,10 @@ public class MainActivity extends AppCompatActivity {
         }else{
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onStudentDelete() {
+        setAdapter();
     }
 }
