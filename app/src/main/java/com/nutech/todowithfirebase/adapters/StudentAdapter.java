@@ -1,5 +1,8 @@
 package com.nutech.todowithfirebase.adapters;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +16,21 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.nutech.todowithfirebase.R;
+import com.nutech.todowithfirebase.activities.MainActivity;
+import com.nutech.todowithfirebase.activities.StudentAddActivity;
 import com.nutech.todowithfirebase.models.Student;
-import com.nutech.todowithfirebase.services.OnStudentDeleteListener;
+import com.nutech.todowithfirebase.services.OnStudentChangeListener;
 
 import java.util.List;
 
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHolder> {
 
     private List<Student> itemList;
-    private OnStudentDeleteListener deleteListener;
+    private OnStudentChangeListener changeListener;
 
-    public StudentAdapter(List<Student> itemList, OnStudentDeleteListener deleteListener) {
+    public StudentAdapter(List<Student> itemList, OnStudentChangeListener changeListener) {
         this.itemList = itemList;
-        this.deleteListener = deleteListener;
+        this.changeListener = changeListener;
     }
 
     @NonNull
@@ -53,6 +58,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
         public TextView txtRollNo;
         public TextView txtDegreeTitle;
         private ImageButton btnDelete;
+        private ImageButton btnEdit;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -62,6 +68,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
             txtRollNo = itemView.findViewById(R.id.txtRollNo);
             txtDegreeTitle = itemView.findViewById(R.id.txtTitle);
             btnDelete = itemView.findViewById(R.id.btnDelete);
+            btnEdit = itemView.findViewById(R.id.btnEdit);
         }
 
         public void bind(Student student) {
@@ -72,6 +79,12 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
 
             btnDelete.setOnClickListener(v -> {
                 deleteDocument(student.docId);
+            });
+
+            btnEdit.setOnClickListener(v -> {
+                if (changeListener != null) {
+                    changeListener.onStudentEdit(student);
+                }
             });
         }
 
@@ -87,8 +100,8 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.ViewHold
                         // Document was successfully deleted
                         System.out.println("DocumentSnapshot successfully deleted!");
                         // Remove the item from the adapter's list and notify
-                        if (deleteListener != null) {
-                            deleteListener.onStudentDelete();
+                        if (changeListener != null) {
+                            changeListener.onStudentChange();
                         }
                     } else {
                         // Handle the error

@@ -13,6 +13,10 @@
         android:theme="@style/Theme.ToDOWithFirebase"
         tools:targetApi="31">
         <activity
+            android:name=".activities.StudentEditActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ToDOWithFirebase" />
+        <activity
             android:name=".activities.StudentAddActivity"
             android:exported="false"
             android:theme="@style/Theme.ToDOWithFirebase" />

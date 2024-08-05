@@ -1,5 +1,7 @@
 package com.nutech.todowithfirebase.activities;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,14 +18,14 @@ import com.nutech.todowithfirebase.R;
 import com.nutech.todowithfirebase.adapters.StudentAdapter;
 import com.nutech.todowithfirebase.databinding.ActivityMainBinding;
 import com.nutech.todowithfirebase.models.Student;
-import com.nutech.todowithfirebase.services.OnStudentDeleteListener;
+import com.nutech.todowithfirebase.services.OnStudentChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements OnStudentDeleteListener {
+public class MainActivity extends AppCompatActivity implements OnStudentChangeListener {
 
     private ActivityMainBinding binding;
     private String TAG = "cust_tag";
@@ -89,7 +91,14 @@ public class MainActivity extends AppCompatActivity implements OnStudentDeleteLi
     }
 
     @Override
-    public void onStudentDelete() {
+    public void onStudentChange() {
         setAdapter();
+    }
+
+    @Override
+    public void onStudentEdit(Student student) {
+        Intent intent = new Intent(MainActivity.this, StudentEditActivity.class);
+        intent.putExtra("std", student);
+        startActivity(intent);
     }
 }

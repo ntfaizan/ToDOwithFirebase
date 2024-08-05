@@ -25,8 +25,8 @@ import java.util.Map;
 public class StudentAddActivity extends AppCompatActivity {
 
     private ActivityStudentAddBinding binding;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String TAG = "cust_tag";
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String TAG = "cust_tag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
